@@ -1,0 +1,633 @@
+/* ==========================================================================
+   GREENLIGHT PORTFOLIO — global design system
+   One file for every token, effect and base style. Sections:
+     1. Tailwind + @theme tokens
+     2. Runtime theme variables (dark default / light override)
+     3. Base element styles
+     4. Component layer: type treatments, holo surfaces, light effects
+     5. Accessibility & motion preferences
+   ========================================================================== */
+
+@import "tailwindcss";
+
+/* --------------------------------------------------------------------------
+   1. THEME TOKENS — exposed to Tailwind as utilities (text-neon, bg-ink…)
+   Colors were sampled from public/assets/portrait.png.
+   -------------------------------------------------------------------------- */
+@theme {
+  --color-bg: var(--bg);
+  --color-bg-2: var(--bg-2);
+  --color-ink: var(--ink);
+  --color-forest: var(--forest);
+  --color-emerald: var(--emerald);
+  --color-green: var(--green);
+  --color-neon: var(--neon);
+  --color-neon-hot: var(--neon-hot);
+  --color-lime: var(--lime);
+  --color-sage: var(--sage);
+  --color-text: var(--text);
+  --color-warm: var(--warm);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-muted: var(--muted);
+
+  /* Typography — fonts come from next/font (layout.tsx) */
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument), Georgia, serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  /* Fluid editorial type scale */
+  --text-mega: clamp(4rem, 13vw, 13.5rem);
+  /* hero name */
+  --text-giant: clamp(2.75rem, 7.5vw, 7.5rem);
+  /* section headings */
+  --text-large: clamp(1.75rem, 3.6vw, 3.4rem);
+  /* sub headings / list rows */
+  --text-body: clamp(1rem, 1.15vw, 1.1875rem);
+
+  /* Motion — one shared vocabulary of durations/eases */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-swing: cubic-bezier(0.66, 0, 0.16, 1);
+}
+
+/* --------------------------------------------------------------------------
+   2. RUNTIME THEME VARIABLES — dark is the default studio condition.
+   -------------------------------------------------------------------------- */
+:root {
+  color-scheme: dark;
+
+  --bg: #020d05;
+  --bg-2: #04180b;
+  --ink: #012e0b;
+  /* deep sampled green, used for lines & wells */
+  --forest: #01460e;
+  --emerald: #02901b;
+  --green: #02bd2c;
+  --neon: #2bf44e;
+  --neon-hot: #40fb5b;
+  --lime: #ccff8f;
+  --sage: #b2d1a2;
+  --text: #eafff0;
+  --warm: #fbcab9;
+  /* the portrait's skin highlight — used sparingly */
+
+  /* derived surfaces */
+  --surface: rgb(234 255 240 / 0.03);
+  --surface-hover: rgb(234 255 240 / 0.06);
+  --line: rgb(43 244 78 / 0.14);
+  --line-strong: rgb(43 244 78 / 0.3);
+  --muted: rgb(178 209 162 / 0.62);
+  /* sage at AA-ish contrast for labels */
+
+  /* cursor spotlight + holo gradient, driven by JS */
+  --mx: 50vw;
+  --my: 40vh;
+  --holo-angle: 120deg;
+
+  /* the page's master light — position follows the portrait in the hero */
+  --light-x: 50%;
+  --light-y: 30%;
+  --light-power: 1;
+  /* 0..1, animated on load ("light turns on") */
+}
+
+/* Light theme: "studio paper" — white wall lit by the same green lamp */
+[data-theme="light"] {
+  color-scheme: light;
+
+  --bg: #eef4ea;
+  --bg-2: #dfe9db;
+  --ink: #0b3a17;
+  --forest: #0b4d1a;
+  --emerald: #077a1f;
+  --green: #049f26;
+  --neon: #04b02c;
+  --neon-hot: #22e04a;
+  --lime: #3f7d1e;
+  --sage: #42583f;
+  --text: #06210f;
+  --warm: #7b4a2e;
+
+  --surface: rgb(1 46 11 / 0.04);
+  --surface-hover: rgb(1 46 11 / 0.07);
+  --line: rgb(1 46 11 / 0.16);
+  --line-strong: rgb(1 46 11 / 0.34);
+  --muted: rgb(6 33 15 / 0.6);
+}
+
+/* --------------------------------------------------------------------------
+   3. BASE
+   -------------------------------------------------------------------------- */
+@layer base {
+  * {
+    min-width: 0;
+  }
+
+  html {
+    scroll-behavior: auto;
+    /* Lenis owns scrolling */
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--neon);
+    color: #020d05;
+  }
+
+  /* Quiet, green-tinted scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--bg);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--forest);
+    border-radius: 99px;
+    border: 2px solid var(--bg);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--emerald);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--neon);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  img {
+    user-select: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. COMPONENT LAYER
+   -------------------------------------------------------------------------- */
+@layer components {
+
+  /* ---- Type treatments -------------------------------------------------- */
+
+  /* Headline ink: white at the top sinking into deep green — the logo's
+     vertical fade, recreated live with background-clip. */
+  .type-ink {
+    /* main titles: plain white (dark theme) / deep green ink (light theme) */
+    color: #ffffff;
+  }
+
+  [data-theme="light"] .type-ink {
+    color: #0b3a17;
+  }
+
+  /* The italic serif accent word: lime → emerald → deep green with a
+     specular band that slowly sweeps across (pure CSS, no JS cost). */
+  .type-holo {
+    background-image: linear-gradient(100deg,
+        var(--forest) 0%,
+        var(--emerald) 26%,
+        var(--lime) 42%,
+        #ffffff 48%,
+        var(--lime) 54%,
+        var(--green) 72%,
+        var(--forest) 100%);
+    background-size: 240% 100%;
+    background-position: var(--holo-pos, 0%) 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: holo-sweep 7s var(--ease-swing) infinite alternate;
+  }
+
+  @keyframes holo-sweep {
+    from {
+      background-position: 0% 0;
+    }
+
+    to {
+      background-position: 100% 0;
+    }
+  }
+
+  /* Big outlined word (footer) — hairline stroke, filled on the way past */
+  .type-outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--line-strong);
+  }
+
+  /* Mono micro-label: the HUD voice. Lowercase, letterspaced. */
+  .type-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  /* ---- Surfaces ---------------------------------------------------------- */
+
+  .glass {
+    background: var(--surface);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  }
+
+  /* Holographic gradient border: a conic slice of the holo palette that
+     slowly rotates around the element, masked to a 1px edge. */
+  .holo-border {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .holo-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from var(--holo-angle),
+        var(--line) 0%,
+        var(--neon) 12%,
+        var(--lime) 18%,
+        var(--line) 30%,
+        var(--line) 62%,
+        var(--emerald) 80%,
+        var(--line) 100%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ---- Light ------------------------------------------------------------- */
+
+  /* Volumetric glow blob: the portrait's lamp, reused behind headings. */
+  .glow-blob {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle,
+        rgb(43 244 78 / 0.32) 0%,
+        rgb(2 189 44 / 0.14) 38%,
+        transparent 70%);
+    filter: blur(40px);
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
+  [data-theme="light"] .glow-blob {
+    background: radial-gradient(circle,
+        rgb(2 189 44 / 0.25) 0%,
+        rgb(2 189 44 / 0.1) 40%,
+        transparent 70%);
+    mix-blend-mode: normal;
+  }
+
+  /* Film grain — tiny inline SVG turbulence, tiled. Fixed overlay in layout. */
+  .grain-overlay {
+    position: fixed;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    pointer-events: none;
+    z-index: 90;
+    opacity: 0.055;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: grain-shift 0.9s steps(4) infinite;
+  }
+
+  @keyframes grain-shift {
+    0% {
+      transform: translate(0, 0);
+    }
+
+    25% {
+      transform: translate(-1.2%, 0.8%);
+    }
+
+    50% {
+      transform: translate(0.8%, -1.2%);
+    }
+
+    75% {
+      transform: translate(-0.6%, -0.6%);
+    }
+
+    100% {
+      transform: translate(0, 0);
+    }
+  }
+
+  /* Faint CRT scanlines + grid — the "screen" the light shines through */
+  .scanlines-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 89;
+    opacity: 0.5;
+    background:
+      repeating-linear-gradient(to bottom,
+        transparent 0 3px,
+        rgb(2 189 44 / 0.022) 3px 4px);
+  }
+
+  /* Cursor spotlight — radial green light that follows the pointer
+     (--mx/--my lerped by the Cursor component). Sits ABOVE content with
+     screen blending: it brightens whatever is underneath it. */
+  .cursor-spotlight {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 80;
+    background: radial-gradient(560px circle at var(--mx) var(--my),
+        rgb(43 244 78 / 0.075),
+        rgb(43 244 78 / 0.02) 45%,
+        transparent 70%);
+    mix-blend-mode: screen;
+  }
+
+  /* The master studio light behind the hero — breathes with --light-power */
+  .studio-light {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(58% 52% at var(--light-x) var(--light-y),
+        rgb(43 244 78 / calc(0.34 * var(--light-power))) 0%,
+        rgb(2 189 44 / calc(0.16 * var(--light-power))) 40%,
+        transparent 72%);
+    mix-blend-mode: screen;
+  }
+
+  /* ---- Interaction ------------------------------------------------------- */
+
+  .magnetic {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    will-change: transform;
+  }
+
+  /* Rows in the selected-work list */
+  .work-row {
+    transition: opacity 0.45s var(--ease-out-expo);
+  }
+
+  .work-list:has(.work-row:hover) .work-row:not(:hover) {
+    opacity: 0.28;
+  }
+
+  .link-underline {
+    background-image: linear-gradient(var(--neon), var(--neon));
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.5s var(--ease-out-expo);
+  }
+
+  .link-underline:hover,
+  .link-underline:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  /* Masked line/letter reveals (GSAP animates the inner element) */
+  .reveal-mask {
+    display: block;
+    overflow: hidden;
+    padding-block: 0.08em;
+    /* keep ascenders/descenders inside the mask */
+    margin-block: -0.08em;
+  }
+
+  /* NOTE: the ink gradient is applied per line / per char (not on a wrapper)
+     — Chromium refuses to paint a parent's background-clip:text through
+     descendants that carry their own compositing layer. */
+  .reveal-line {
+    display: block;
+  }
+
+  .split-char {
+    display: inline-block;
+  }
+
+  /* ---- Custom cursor ------------------------------------------------------ */
+
+  .has-custom-cursor,
+  .has-custom-cursor a,
+  .has-custom-cursor button,
+  .has-custom-cursor [role="button"] {
+    cursor: none;
+  }
+
+  .has-custom-cursor input,
+  .has-custom-cursor textarea,
+  .has-custom-cursor select {
+    cursor: auto;
+  }
+
+  .cursor-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  .cursor-dot {
+    position: fixed;
+    top: -3px;
+    left: -3px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--neon-hot);
+    box-shadow: 0 0 12px rgb(64 251 91 / 0.9);
+    opacity: 0;
+  }
+
+  .cursor-ring {
+    position: fixed;
+    top: -17px;
+    left: -17px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    transition:
+      width 0.35s var(--ease-out-expo),
+      height 0.35s var(--ease-out-expo),
+      margin 0.35s var(--ease-out-expo),
+      top 0.35s var(--ease-out-expo),
+      left 0.35s var(--ease-out-expo),
+      background-color 0.35s var(--ease-out-expo),
+      border-color 0.35s var(--ease-out-expo);
+  }
+
+  /* grown state over links */
+  .cursor-ring[data-mode="link"] {
+    width: 56px;
+    height: 56px;
+    top: -28px;
+    left: -28px;
+    border-color: var(--neon);
+    background: rgb(43 244 78 / 0.06);
+  }
+
+  /* full disc with label over work rows / media */
+  .cursor-ring[data-mode="label"] {
+    width: 84px;
+    height: 84px;
+    top: -42px;
+    left: -42px;
+    background: rgb(2 13 5 / 0.55);
+    backdrop-filter: blur(6px);
+    border-color: var(--neon);
+  }
+
+  .cursor-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--neon-hot);
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.25s ease 0.05s, transform 0.3s var(--ease-out-expo);
+  }
+
+  .cursor-ring[data-mode="label"] .cursor-label {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* ---- Marquee ------------------------------------------------------------ */
+
+  .gate-track {
+    animation: marquee-scroll 28s linear infinite;
+  }
+
+  .marquee-track {
+    animation: marquee-scroll var(--marquee-duration, 36s) linear infinite;
+  }
+
+  @keyframes marquee-scroll {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* ---- Presence dot -------------------------------------------------------- */
+
+  .status-ping {
+    animation: status-ping 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  @keyframes status-ping {
+    0% {
+      transform: scale(1);
+      opacity: 0.7;
+    }
+
+    70% {
+      transform: scale(3.2);
+      opacity: 0;
+    }
+
+    100% {
+      transform: scale(3.2);
+      opacity: 0;
+    }
+  }
+
+  /* ---- Portrait blending ----------------------------------------------------
+     The photo's own backdrop already vignettes to near-black, so a radial
+     alpha mask is enough to dissolve its edges into the page. */
+  .portrait-mask {
+    -webkit-mask-image: radial-gradient(ellipse 66% 62% at 50% 42%,
+        #000 40%,
+        transparent 72%);
+    mask-image: radial-gradient(ellipse 66% 62% at 50% 42%,
+        #000 40%,
+        transparent 72%);
+  }
+
+  /* extra floor fade — grounds the portrait into the section below it */
+  .portrait-fade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, var(--bg) 2%, transparent 26%);
+  }
+
+  /* hero scroll hint: a pulse of light running down the line */
+  .scroll-hint-line {
+    transform: translateX(-100%);
+    animation: scroll-hint 2.4s var(--ease-swing) infinite;
+  }
+
+  @keyframes scroll-hint {
+    0% {
+      transform: translateX(-100%);
+    }
+
+    55% {
+      transform: translateX(0);
+    }
+
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  /* work hover preview — holographic frame that trails the cursor */
+  .work-preview {
+    will-change: transform;
+  }
+
+  .work-preview img {
+    transition: opacity 0.35s var(--ease-out-expo);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. REDUCED MOTION — static, readable, still on-brand
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+
+  .grain-overlay,
+  .scanlines-overlay,
+  .cursor-spotlight {
+    animation: none;
+  }
+
+  .type-holo {
+    animation: none;
+    background-position: 60% 0;
+  }
+}
