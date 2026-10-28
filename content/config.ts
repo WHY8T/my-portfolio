@@ -1,54 +1,85 @@
 /* ==========================================================================
    CONTENT CONFIG — everything you'd ever want to edit lives in this file.
-   Replace the placeholder values below (marked ← REPLACE) and the whole
-   site updates: copy, projects, links, marquee, timeline, lab list.
    ========================================================================== */
 
 export const site = {
   name: {
-    first: "Houasnia",            // ← REPLACE — shown huge in the hero
-    last: "Ahmed Adem",             // ← REPLACE
-    full: "Houasnia Ahmed Adem",        // ← REPLACE — used in metadata, footer, alt text
+    first: "Houasnia",
+    last: "Ahmed Adem",
+    full: "Houasnia Ahmed Adem",
   },
-  role: "Creative Artisr & Graphic Designer",   // ← REPLACE
-  location: "Kolea,Algeria",           // ← REPLACE
-  email: "ademhouasnia813@gmail.com",               // ← REPLACE
-  availability: "Available from March 2026",// ← REPLACE — shown in the HUD
-  url: "https://your-domain.com",           // ← REPLACE — for SEO / sitemap
+  role: "Creative Artist & Graphic Designer",
+  location: "Kolea, Algeria",
+  email: "ademhouasnia813@gmail.com",
+  availability: "Available from March 2026",
+  url: "https://your-domain.com",
   description:
-    "Portfolio of a creative developer & designer working in light, type and motion.", // ← REPLACE
-  socials: [                                // ← REPLACE with your real links
-
-
+    "Portfolio of a creative artist and graphic designer working in branding, typography and motion.",
+  socials: [
     { label: "Instagram", href: "https://instagram.com/yourhandle" },
-    { label: "LinkedIn", href: "https://www.linkedin.com/in/houasnia-ahmed-adem-a19a5443b/" },
+    {
+      label: "LinkedIn",
+      href: "https://www.linkedin.com/in/houasnia-ahmed-adem-a19a5443b/",
+    },
   ],
 };
 
 /* ---------------------------------------------------------------------------
-   SELECTED WORK — 6 projects. `cover` is used in the floating hover preview
-   and the work grid; `gallery` images appear in the case-study page.
+   SELECTED WORK
    --------------------------------------------------------------------------- */
+
 export type Project = {
   slug: string;
   title: string;
-  category: string;   // short tag shown on the row (mono, lowercase)
+  category: string;
   year: string;
   stack: string[];
-  summary: string;    // one line, shown on hover / work page
-  results: string[];  // 2–3 measurable outcomes for the case study
-  cover: string;      // ← put your real project images in /public/assets
+  summary: string;
+  results: string[];
+  cover: string;
   gallery: string[];
+  role?: string;
+  client?: string;
 };
 
 export const projects: Project[] = [
+  {
+    slug: "shahid",
+    title: "Shahid",
+    category: "brand identity",
+    year: "2026",
+    stack: ["Logo", "Branding", "Packaging", "Print"],
+    summary:
+      "A bilingual identity for an Algerian clothing label: an Arabic ش fused with Latin letters, carried from the logo to labels, tags and packaging.",
+    results: [
+      "Logo + brand system",
+      "Woven labels, hang tags & packaging",
+      "Made in Algeria",
+    ],
+    role: "brand identity",
+    client: "Shahid",
+    cover: "/work/shahid/cover.png",
+    gallery: [
+      "/work/shahid/01.png",
+      "/work/shahid/02.png",
+      "/work/shahid/03.png",
+      "/work/shahid/04.png",
+      "/work/shahid/05.png",
+      "/work/shahid/06.png",
+      "/work/shahid/07.png",
+      "/work/shahid/08.png",
+      "/work/shahid/09.png",
+      "/work/shahid/10.png",
+    ],
+  },
   {
     slug: "lumen-studio",
     title: "Lumen Studio",
     category: "site / motion",
     year: "2026",
     stack: ["Next.js", "GSAP", "WebGL"],
-    summary: "A lighting-design studio site where every surface answers the cursor.",
+    summary:
+      "A lighting-design studio site where every surface answers the cursor.",
     results: ["+38% enquiry rate", "Awwwards honorable mention", "0.9s LCP"],
     cover: "/assets/portrait.png",
     gallery: ["/assets/portrait.png"],
@@ -103,7 +134,8 @@ export const projects: Project[] = [
     category: "site / dev",
     year: "2023",
     stack: ["Next.js", "CMS"],
-    summary: "A newsroom site with typographic speed as the feature.",
+    summary:
+      "A newsroom site with typographic speed as the feature.",
     results: ["Lighthouse 99", "+19% returning readers"],
     cover: "/assets/portrait.png",
     gallery: ["/assets/portrait.png"],
@@ -111,52 +143,105 @@ export const projects: Project[] = [
 ];
 
 /* ---------------------------------------------------------------------------
-   SKILLS MARQUEE — mixed sans + serif-italic words. Keep it a list of words;
-   alternate: every second word renders in the italic serif accent.
+   SKILLS MARQUEE
    --------------------------------------------------------------------------- */
+
 export const marqueeWords = [
-  "art direction", "webgl", "design systems", "typography", "react",
-  "motion", "creative code", "branding", "gsap", "interfaces", "shaders", "ui design",
+  "art direction",
+  "webgl",
+  "design systems",
+  "typography",
+  "react",
+  "motion",
+  "creative code",
+  "branding",
+  "gsap",
+  "interfaces",
+  "shaders",
+  "ui design",
 ];
 
 export const skills = {
-  design: ["Art direction", "Typography", "Design systems", "Prototyping", "Brand identity"],
+  design: [
+    "Art direction",
+    "Typography",
+    "Design systems",
+    "Prototyping",
+    "Brand identity",
+  ],
   code: ["TypeScript", "React / Next.js", "GSAP", "WebGL / GLSL", "Node"],
   tools: ["Figma", "After Effects", "Blender", "Cursor", "Vercel"],
 };
 
 /* ---------------------------------------------------------------------------
-   ABOUT — story + experience timeline.
+   ABOUT — story + experience timeline
    --------------------------------------------------------------------------- */
+
 export const about = {
   story: [
-    // ← REPLACE with your real story; each string is one paragraph.
     "I'm a designer-developer working where light meets interface. My work starts with one question: what would this product look like if it were lit by a single, deliberate source?",
     "That question has taken me from brand systems to shader-driven websites. I care about type that behaves, motion that means something, and pages that stay fast while doing too much.",
     "Off the clock I photograph portraits in hard light — the same obsession that fuels this site.",
   ],
-  timeline: [ // ← REPLACE — most recent first
-    { period: "2024 — now", role: "Independent creative developer", org: "Worldwide, remote" },
-    { period: "2022 — 2024", role: "Senior product designer", org: "Studio placeholder" },
-    { period: "2020 — 2022", role: "Front-end developer", org: "Agency placeholder" },
-    { period: "2019 — 2020", role: "Design intern", org: "Somewhere with good lamps" },
+  timeline: [
+    {
+      period: "2024 — now",
+      role: "Independent creative developer",
+      org: "Worldwide, remote",
+    },
+    {
+      period: "2022 — 2024",
+      role: "Senior product designer",
+      org: "Studio placeholder",
+    },
+    {
+      period: "2020 — 2022",
+      role: "Front-end developer",
+      org: "Agency placeholder",
+    },
+    {
+      period: "2019 — 2020",
+      role: "Design intern",
+      org: "Somewhere with good lamps",
+    },
   ],
 };
 
 /* ---------------------------------------------------------------------------
-   LAB — motion experiments shown on /lab.
-   `kind` maps to a component in components/lab.
+   LAB — motion experiments shown on /lab
    --------------------------------------------------------------------------- */
+
 export const labExperiments = [
-  { slug: "particle-portrait", kind: "particles", title: "Particle portrait", blurb: "The hero photo dissolving into cursor-reactive green dust." },
-  { slug: "holo-tilt", kind: "tilt", title: "Holo tilt", blurb: "A card with an iridescent foil surface that tilts in 3D." },
-  { slug: "light-orb", kind: "orb", title: "Light orb", blurb: "A shader orb breathing green caustics. Drag to disturb." },
-  { slug: "type-scramble", kind: "scramble", title: "Type scramble", blurb: "Letters decoding out of noise, masked like the hero." },
+  {
+    slug: "particle-portrait",
+    kind: "particles",
+    title: "Particle portrait",
+    blurb: "The hero photo dissolving into cursor-reactive green dust.",
+  },
+  {
+    slug: "holo-tilt",
+    kind: "tilt",
+    title: "Holo tilt",
+    blurb: "A card with an iridescent foil surface that tilts in 3D.",
+  },
+  {
+    slug: "light-orb",
+    kind: "orb",
+    title: "Light orb",
+    blurb: "A shader orb breathing green caustics. Drag to disturb.",
+  },
+  {
+    slug: "type-scramble",
+    kind: "scramble",
+    title: "Type scramble",
+    blurb: "Letters decoding out of noise, masked like the hero.",
+  },
 ] as const;
 
 /* ---------------------------------------------------------------------------
-   NAV — command palette + header. Keep it short.
+   NAV — command palette + header
    --------------------------------------------------------------------------- */
+
 export const nav = [
   { label: "Index", href: "/" },
   { label: "Work", href: "/work" },

@@ -1,10 +1,10 @@
 "use client";
 
-/* Hero — full-bleed portrait on the right, all the writing on the left.
-   The portrait is the page's light source: it rises out of darkness while the
-   studio lamp flickers on, the headline lines slide up from behind masks, and
-   the photo drifts a few pixels with the cursor. Waits for the opening gate
-   ("open") before it plays.
+/* Hero — the photo fills the whole hero, the writing sits on the left.
+   Flashlight effect: the photo is dimmed, and a soft pool of light follows the
+   mouse over it (it comes back to rest on the face when the mouse leaves).
+   It also waits for the opening gate ("open") before it plays: the light
+   flickers on, the photo rises out of darkness, the headline slides up.
 
    ✏️ EDIT YOUR COPY HERE — headline, intro paragraph and buttons. */
 
@@ -28,9 +28,14 @@ const INTRO =
 const PRIMARY_CTA = { label: "View work", href: "/work" };
 const SECONDARY_CTA = { label: "About me", href: "/about" };
 
+/* The hero photo is public/assets/hero.jpg (5504 × 3072). Its size and position are
+   set on the <Image> below; the light rests on the face at the spot in faceSpot(). */
+const SPOT_RADIUS = 430; // px — size of the pool of light
+const DARKNESS = 0.6; // 0 = no dimming … 1 = black. 0.6 keeps the face easy to see.
+
 export default function Hero() {
   const rootRef = useRef<HTMLElement>(null);
-  const lightRef = useRef<HTMLDivElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
   const portraitRef = useRef<HTMLDivElement>(null);
   const lenis = useLenis();
 
@@ -44,7 +49,7 @@ export default function Hero() {
     const lines = root.querySelectorAll<HTMLElement>(".hero-line");
     const fades = root.querySelectorAll<HTMLElement>(".hero-fade");
     const portrait = portraitRef.current;
-    const light = lightRef.current;
+    const light = glowRef.current;
 
     let started = false;
     let safety: ReturnType<typeof setTimeout> | undefined;
@@ -113,22 +118,93 @@ export default function Hero() {
     };
   }, []);
 
-  /* ------------------------------------------- portrait drift (fine pointer) */
+  /* ------------------------------- flashlight: light follows the mouse */
   useEffect(() => {
-    if (!window.matchMedia("(pointer: fine)").matches) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const portrait = portraitRef.current;
-    if (!portrait) return;
+    const root = rootRef.current;
+    if (!root) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const finePointer = window.matchMedia("(pointer: fine)").matches;
 
-    const tX = gsap.quickTo(portrait, "x", { duration: 1.2, ease: "power3.out" });
-    const tY = gsap.quickTo(portrait, "y", { duration: 1.2, ease: "power3.out" });
-
-    const onMove = (e: MouseEvent) => {
-      tX((e.clientX / window.innerWidth - 0.5) * -22);
-      tY((e.clientY / window.innerHeight - 0.5) * -16);
+    // where the face is on screen — the light rests here
+    const faceSpot = () => {
+      const w = root.clientWidth;
+      const h = window.innerHeight;
+      const desktop = window.innerWidth >= 768;
+      return desktop ? { x: w * 0.6, y: h * 0.4 } : { x: w * 0.5, y: h * 0.26 };
     };
-    window.addEventListener("mousemove", onMove, { passive: true });
-    return () => window.removeEventListener("mousemove", onMove);
+
+    const rest = faceSpot();
+    const pos = { x: rest.x, y: rest.y };
+    const write = () => {
+      root.style.setProperty("--mx", `${pos.x.toFixed(1)}px`);
+      root.style.setProperty("--my", `${pos.y.toFixed(1)}px`);
+    };
+    write();
+    if (reduced) return; // static: light stays on the face
+
+    const qx = gsap.quickTo(pos, "x", { duration: 0.7, ease: "power3.out" });
+    const qy = gsap.quickTo(pos, "y", { duration: 0.7, ease: "power3.out" });
+
+    const tick = () => {
+      if (window.scrollY > root.offsetHeight) return; // hero is off-screen
+      write();
+    };
+    gsap.ticker.add(tick);
+
+    const goRest = () => {
+      const r = faceSpot();
+      qx(r.x);
+      qy(r.y);
+    };
+
+    let idle: gsap.core.Tween | undefined;
+
+    if (finePointer) {
+      const onMove = (e: MouseEvent) => {
+        const rect = root.getBoundingClientRect();
+        qx(e.clientX - rect.left);
+        qy(e.clientY - rect.top);
+      };
+      window.addEventListener("mousemove", onMove, { passive: true });
+      document.documentElement.addEventListener("mouseleave", goRest);
+      window.addEventListener("resize", goRest);
+
+      // the photo itself drifts a few pixels opposite the cursor
+      const portrait = portraitRef.current;
+      let dX: ((v: number) => void) | undefined;
+      let dY: ((v: number) => void) | undefined;
+      if (portrait) {
+        dX = gsap.quickTo(portrait, "x", { duration: 1.2, ease: "power3.out" });
+        dY = gsap.quickTo(portrait, "y", { duration: 1.2, ease: "power3.out" });
+      }
+      const onDrift = (e: MouseEvent) => {
+        dX?.((e.clientX / window.innerWidth - 0.5) * -22);
+        dY?.((e.clientY / window.innerHeight - 0.5) * -16);
+      };
+      window.addEventListener("mousemove", onDrift, { passive: true });
+
+      return () => {
+        gsap.ticker.remove(tick);
+        window.removeEventListener("mousemove", onMove);
+        window.removeEventListener("mousemove", onDrift);
+        document.documentElement.removeEventListener("mouseleave", goRest);
+        window.removeEventListener("resize", goRest);
+      };
+    }
+
+    // touch screens: the light slowly sways around the face
+    idle = gsap.to(pos, {
+      x: rest.x + root.clientWidth * 0.06,
+      y: rest.y + root.clientHeight * 0.03,
+      duration: 4,
+      ease: "sine.inOut",
+      yoyo: true,
+      repeat: -1,
+    });
+    return () => {
+      gsap.ticker.remove(tick);
+      idle?.kill();
+    };
   }, []);
 
   const accentIndex = HEADLINE.findIndex((l) => l.accent);
@@ -137,29 +213,45 @@ export default function Hero() {
     <section
       ref={rootRef}
       className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden px-5 pb-10 pt-28 md:px-10"
+      style={{ "--mx": "66%", "--my": "36%" } as React.CSSProperties}
     >
-      {/* the master studio light */}
-      <div
-        ref={lightRef}
-        className="studio-light"
-        style={{ "--light-x": "66%", "--light-y": "40%" } as React.CSSProperties}
-      />
-
-      {/* full-bleed portrait — face sits right of centre, left edge dissolves */}
+      {/* the photo — a big close-up that fills the whole hero. The image is sized by
+          the screen height so the face is large (like a magazine cover), and placed so
+          the face sits right of centre with the writing on the left. */}
       <div
         ref={portraitRef}
-        aria-hidden="false"
-        className="hero-portrait pointer-events-none absolute inset-y-0 right-0 z-0 w-full will-change-transform md:w-[80%] md:[mask-image:linear-gradient(to_right,transparent_0%,#000_36%)] md:[-webkit-mask-image:linear-gradient(to_right,transparent_0%,#000_36%)]"
+        className="hero-portrait pointer-events-none absolute inset-0 z-0 overflow-hidden will-change-transform"
       >
         <Image
-          src="/assets/portrait.png"
-          alt={`${site.name.full}, lit by a green studio light`}
-          fill
+          src="/assets/hero.jpg"
+          alt={`${site.name.full}, smiling, lit by a green studio light`}
+          width={5504}
+          height={3072}
           priority
-          sizes="(max-width: 768px) 100vw, 80vw"
-          className="object-cover object-[50%_30%] md:object-[50%_34%]"
+          sizes="300vw"
+          className="absolute left-[calc(50vw_-_105svh)] top-[-8.5svh] h-[120svh] w-auto max-w-none md:left-[calc(60vw_-_171svh)] md:top-[-14.7svh] md:h-[195svh]"
         />
       </div>
+
+      {/* flashlight: dim everywhere except a soft pool of light under the cursor */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-[1]"
+        style={{
+          background: `radial-gradient(circle ${SPOT_RADIUS}px at var(--mx) var(--my), rgb(2 13 5 / 0) 0%, rgb(2 13 5 / ${DARKNESS * 0.25}) 45%, rgb(2 13 5 / ${DARKNESS}) 100%)`,
+        }}
+      />
+      {/* the light itself — a little extra glow in the middle of the pool */}
+      <div
+        ref={glowRef}
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-[1]"
+        style={{
+          mixBlendMode: "soft-light",
+          background:
+            "radial-gradient(circle 300px at var(--mx) var(--my), rgb(255 255 255 / 0.55) 0%, rgb(190 255 200 / 0.18) 55%, transparent 100%)",
+        }}
+      />
 
       {/* legibility: shade behind the text (left on desktop, bottom on mobile) */}
       <div

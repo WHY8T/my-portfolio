@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import WorkList from "@/components/work/WorkList";
+import WorkCards from "@/components/work/WorkCards";
 import HoloHeading from "@/components/ui/HoloHeading";
 import { projects } from "@/content/config";
 
@@ -15,7 +15,9 @@ export default function WorkPage() {
         <HoloHeading lines={["every project", "worth showing."]} size="giant" />
         <p className="type-label hidden pb-3 md:block">{projects.length} projects</p>
       </div>
-      <WorkList items={projects} showSummary />
+      <div className="pt-10 md:pt-14">
+        <WorkCards items={projects} />
+      </div>
     </div>
   );
 }

@@ -65,8 +65,8 @@ export default async function CaseStudyPage({
           {[
             ["year", project.year],
             ["stack", project.stack.join(", ")],
-            ["role", "design + build"],
-            ["client", "confidential"],
+            ["role", project.role ?? "design + build"],
+            ["client", project.client ?? "confidential"],
           ].map(([k, v]) => (
             <div key={k}>
               <dt className="type-label mb-2">{k}</dt>
@@ -118,21 +118,18 @@ export default async function CaseStudyPage({
       </section>
 
       {/* gallery */}
-      <section className="mt-20 space-y-6 px-5 md:mt-28 md:px-10">
+      <section className="mt-20 space-y-3 px-5 md:mt-28 md:space-y-5 md:px-10">
         {project.gallery.map((src, i) => (
           <Reveal key={i}>
-            <div
-              className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border"
+            {/* natural proportions: tall boards and wide shots both show in full */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={src}
+              alt={`${project.title} — image ${i + 1}`}
+              loading="lazy"
+              className="h-auto w-full rounded-2xl border"
               style={{ borderColor: "var(--line)" }}
-            >
-              <Image
-                src={src}
-                alt={`${project.title} — image ${i + 1}`}
-                fill
-                sizes="(max-width: 768px) 100vw, 92vw"
-                className="object-cover"
-              />
-            </div>
+            />
           </Reveal>
         ))}
       </section>

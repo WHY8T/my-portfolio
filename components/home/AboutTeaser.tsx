@@ -55,16 +55,16 @@ export default function AboutTeaser() {
     <section className="relative overflow-hidden px-5 py-24 md:px-10 md:py-36">
       <div className="grid items-center gap-12 md:grid-cols-12">
         {/* framed portrait with holo edge */}
-        <Reveal className="md:col-span-5 lg:col-span-4">
+        <Reveal className="md:col-span-7">
           <div
             ref={tiltRef}
-            className="holo-border relative aspect-[4/5] w-full max-w-[420px] overflow-hidden rounded-2xl"
+            className="holo-border relative aspect-[16/9] w-full overflow-hidden rounded-2xl"
           >
             <Image
-              src="/assets/portrait.png"
+              src="/assets/about.jpg"
               alt={`${site.name.full} in green studio light`}
               fill
-              sizes="(max-width: 768px) 90vw, 420px"
+              sizes="(max-width: 768px) 92vw, 760px"
               className="object-cover"
             />
             <div
@@ -78,12 +78,12 @@ export default function AboutTeaser() {
           </div>
         </Reveal>
 
-        <div className="md:col-span-7 lg:col-span-7 lg:col-start-6">
+        <div className="md:col-span-5">
           <Reveal>
             <p className="type-label mb-6">the person behind the light</p>
           </Reveal>
           <Reveal delay={0.06}>
-            <blockquote className="font-serif text-large italic leading-[1.15] text-text md:text-[2.4rem]">
+            <blockquote className="font-serif text-large italic leading-[1.15] text-text md:text-[1.9rem]">
               “{about.story[0]}”
             </blockquote>
           </Reveal>

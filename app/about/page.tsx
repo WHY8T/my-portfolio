@@ -30,39 +30,32 @@ export default function AboutPage() {
     <div className="px-5 pt-32 md:px-10 md:pt-44">
       <HoloHeading lines={["the person in", "the green room."]} size="giant" />
 
-      <div className="mt-16 grid gap-14 md:mt-24 md:grid-cols-12">
-        {/* portrait — framed, glowing edge */}
-        <div className="md:col-span-5 lg:col-span-4">
-          <div className="sticky top-28">
-            <Reveal>
-              <div
-                className="holo-border relative aspect-[4/5] w-full max-w-[440px] overflow-hidden rounded-2xl"
-                data-cursor="hi"
-              >
-                <Image
-                  src="/assets/portrait.png"
-                  alt={`${site.name.full}`}
-                  fill
-                  sizes="(max-width: 768px) 90vw, 440px"
-                  className="object-cover"
-                />
-              </div>
-              <p className="type-label mt-4">
-                {site.location.toLowerCase()} — usually near a lamp
-              </p>
-            </Reveal>
-          </div>
+      {/* the poster — shown whole, wide, with a glowing edge */}
+      <Reveal className="mt-16 md:mt-24">
+        <div
+          className="holo-border relative aspect-[16/9] w-full overflow-hidden rounded-2xl"
+          data-cursor="hi"
+        >
+          <Image
+            src="/assets/about.jpg"
+            alt={`${site.name.full} — portfolio 2026`}
+            fill
+            sizes="(max-width: 768px) 92vw, 1280px"
+            className="object-cover"
+          />
         </div>
+        <p className="type-label mt-4">{site.location.toLowerCase()} — usually near a lamp</p>
+      </Reveal>
 
-        <div className="md:col-span-7 lg:col-span-7 lg:col-start-6">
+      <div className="mt-16 grid gap-14 md:mt-24 md:grid-cols-12">
+        <div className="md:col-span-9 md:col-start-4">
           {about.story.map((paragraph, i) => (
             <Reveal key={i} delay={i * 0.05}>
               <p
-                className={`max-w-[58ch] leading-relaxed ${
-                  i === 0
+                className={`max-w-[58ch] leading-relaxed ${i === 0
                     ? "font-serif text-large italic leading-[1.25] text-text md:text-[2rem]"
                     : "mt-7 text-[1.05rem] text-muted"
-                }`}
+                  }`}
               >
                 {paragraph}
               </p>
