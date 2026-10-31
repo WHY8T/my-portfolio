@@ -40,4 +40,6 @@ export const toolIcons: Record<string, ToolIcon> = {
   "VS Code": { type: "badge", text: "Vs", bg: "#007ACC", fg: "#FFFFFF" },
   "ChatGPT": { type: "badge", text: "Gp", bg: "#10A37F", fg: "#FFFFFF" },
   "Midjourney": { type: "badge", text: "Mj", bg: "#1B1B1F", fg: "#FFFFFF" },
+  "Weavy": { type: "badge", text: "W", bg: "#1B1B1F", fg: "#FFFFFF" },
+  "Nano Banana": { type: "badge", text: "🍌", bg: "#2A2300", fg: "#FFD84D" },
 };
